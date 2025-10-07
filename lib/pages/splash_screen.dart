@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'login_page.dart'; // pastikan file login_page.dart ada
+import 'package:recova/pages/home_page.dart';
+import 'package:recova/pages/login_page.dart';
+import 'package:recova/services/auth_service.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -13,13 +15,23 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    // Delay 3 detik sebelum berpindah ke login page
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
-    });
+    _checkAuthStatus();
+  }
+
+  Future<void> _checkAuthStatus() async {
+    // Tunggu 3 detik untuk efek splash screen
+    await Future.delayed(const Duration(seconds: 3));
+
+    final AuthService authService = AuthService();
+    // Coba baca token dari storage
+    final String? token = await authService.getToken();
+
+    if (!mounted) return;
+
+    // Jika token ada, navigasi ke HomePage. Jika tidak, ke LoginPage.
+    final page = token != null ? const HomePage() : const LoginPage();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => page));
   }
 
   @override

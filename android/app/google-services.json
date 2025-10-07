@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "756280521811",
+    "project_id": "recova-app-474318",
+    "storage_bucket": "recova-app-474318.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756280521811:android:61efbe8f20760d95cf42a6",
+        "android_client_info": {
+          "package_name": "com.company.Recova"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756280521811-r8m9ttveh4dgsfgr6rdrnm6o1bffqsqn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.company.Recova",
+            "certificate_hash": "50a38f30081686b4233b1c2f5be451b126759529"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0OaebizpArmhTzF1-H8X4NLMRTo9Or88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

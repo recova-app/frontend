@@ -1,103 +1,154 @@
 import 'package:flutter/material.dart';
+import 'package:recova/pages/home_page.dart';
+import 'package:recova/services/auth_service.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool isLoading = false;
+  final AuthService _authService = AuthService();
+
+  Future<void> _handleGoogleSignIn() async {
+    setState(() => isLoading = true);
+    try {
+      final token = await _authService.signInWithGoogle();
+      if (!mounted) return;
+
+      if (token != null) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Terjadi error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF4CA7A3), // Hijau tosca muda
-              Color(0xFF1E3A3A), // Hijau tosca gelap
+              Color(0xFF4CA7A3), // hijau tosca muda
+              Color(0xFF1E3A3A), // hijau tosca gelap
             ],
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 80),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: [
+                SizedBox(height: height * 0.12),
 
-              // 🔧 Logo Baru
-              Image.asset(
-                'assets/images/logo.png', // path logo kamu
-                width: 120,
-                height: 120,
-              ),
-
-              const SizedBox(height: 24),
-
-              const Text(
-                "“Kamu telah mengambil langkah terberat. Perjalananmu menuju kebebasan dimulai dari sini”",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  height: 1.5,
-                ),
-              ),
-
-              SizedBox(height: 56),
-
-              const Text(
-                "Masuk / Daftar",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              const Text(
-                "Data kamu aman bersama kami. Kami hanya menyimpan profil\ndan aktivitas akun kamu",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // 🔘 Tombol Google Login
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  // );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  minimumSize: const Size(double.infinity, 55),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
+                // 🔹 Logo di tengah atas
+                Center(
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 108,
+                    height: 108,
                   ),
                 ),
-                icon: Image.asset(
-                  'assets/images/google.png', // pastikan ada file ini juga
-                  height: 28,
-                ),
-                label: const Text(
-                  "Lanjutkan Dengan Google",
+
+                const SizedBox(height: 32),
+
+                // 🔹 Teks kutipan motivasi
+                const Text(
+                  "“Kamu telah mengambil langkah terberat. Perjalananmu menuju kebebasan dimulai dari sini”",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
+                    color: Colors.white,
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
+                    height: 1.6,
                   ),
                 ),
-              ),
 
-              const Spacer(flex: 1),
-            ],
+                SizedBox(height: height * 0.1),
+
+                // 🔹 Judul Masuk / Daftar
+                const Text(
+                  "Masuk / Daftar",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // 🔹 Deskripsi data aman
+                const Text(
+                  "Data kamu aman bersama kami.\nKami hanya menyimpan profil dan aktivitas akun kamu",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13.5,
+                    height: 1.4,
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+
+                // 🔹 Tombol Google
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton.icon(
+                    onPressed: isLoading ? null : _handleGoogleSignIn,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      elevation: 4,
+                    ),
+                    icon: Padding(
+                      padding: const EdgeInsets.only(left: 4.0),
+                      child: Image.asset(
+                        'assets/images/google.png',
+                        height: 26,
+                      ),
+                    ),
+                    label: Text(
+                      isLoading
+                          ? "Memproses..."
+                          : "Lanjutkan Dengan Google",
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 80),
+              ],
+            ),
           ),
         ),
       ),
