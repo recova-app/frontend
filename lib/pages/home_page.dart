@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:recova/pages/login_page.dart';
 import 'package:recova/services/api_service.dart';
 import 'package:recova/models/user_model.dart';
 import 'package:recova/models/statistics_model.dart';
-import 'package:recova/services/auth_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +14,6 @@ class _HomePageState extends State<HomePage> {
   User? _user;
   Statistics? _stats;
   bool _loading = true;
-  final AuthService _authService = AuthService();
   final int _totalDays = 32;
 
   @override
@@ -49,15 +46,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _handleLogout() async {
-    await _authService.logout();
-    if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (route) => false,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -68,17 +56,6 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
-      appBar: AppBar(
-        title: Text('Halo, ${_user?.nickname ?? "User"}'),
-        backgroundColor: const Color(0xFF2EC4B6),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-            onPressed: _handleLogout,
-          ),
-        ],
-      ),
       body: RefreshIndicator(
         onRefresh: _fetchHomeData,
         child: SingleChildScrollView(

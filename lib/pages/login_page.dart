@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recova/pages/home_page.dart';
+import 'package:recova/pages/main_scaffold.dart';
 import 'package:recova/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (token != null) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const MainScaffold()),
           (route) => false,
         );
       }
