@@ -23,9 +23,6 @@ class AuthService {
       return null;
     }
 
-    // Simpan nama pengguna untuk ditampilkan di HomePage
-    await _storage.write(key: 'user_name', value: account.displayName);
-
     // 2. Dapatkan Google ID Token
     final GoogleSignInAuthentication auth = await account.authentication;
     final idToken = auth.idToken;
@@ -42,14 +39,21 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final jwtToken = data['data']?['token'];
 
-      if (jwtToken != null) {
+      // Try several common places where the backend might place the JWT.
+      String? jwtToken;
+      if (data is Map<String, dynamic>) {
+        jwtToken = data['data'] is Map ? (data['data']['token'] ?? data['data']['accessToken'] ?? data['data']['access_token']) : null;
+        jwtToken ??= data['token'] ?? data['accessToken'] ?? data['access_token'];
+      }
+
+      if (jwtToken != null && jwtToken.isNotEmpty) {
         // 4. Simpan token JWT
         await _storage.write(key: 'jwt_token', value: jwtToken);
         return jwtToken;
       } else {
-        throw Exception("Respons dari server tidak valid (token tidak ditemukan).");
+        // Provide the raw response body to help debugging backend changes.
+        throw Exception("Respons dari server tidak valid (token tidak ditemukan). Body: ${response.body}");
       }
     } else {
       throw Exception("Login gagal: ${response.body}");
@@ -59,11 +63,8 @@ class AuthService {
   Future<void> logout() async {
     // Hapus token dari kedua tempat
     await _googleSignIn.signOut();
-    await _storage.delete(key: 'user_name');
     await _storage.delete(key: 'jwt_token');
   }
 
   Future<String?> getToken() => _storage.read(key: 'jwt_token');
-
-  Future<String?> getUserName() => _storage.read(key: 'user_name');
 }

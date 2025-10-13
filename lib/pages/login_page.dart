@@ -27,9 +27,13 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       if (!mounted) return;
+      String errorMessage = 'Terjadi kesalahan saat login. Silakan coba lagi.';
+      if (e is Exception) {
+        errorMessage = e.toString().replaceFirst('Exception: ', '');
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Terjadi error: $e'),
+          content: Text(errorMessage),
           backgroundColor: Colors.red,
         ),
       );

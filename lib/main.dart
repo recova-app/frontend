@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:recova/pages/splash_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recova/bloc/home_cubit.dart';
+import 'package:recova/bloc/checkin_cubit.dart';
 
 void main() {
   // Ensure binding is initialized for plugin calls during startup
@@ -32,7 +35,15 @@ void main() {
 
   // Catch errors that escape the Flutter framework
   runZonedGuarded(() {
-    runApp(const MyApp());
+    runApp(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
+          BlocProvider<CheckinCubit>(create: (context) => CheckinCubit()),
+        ],
+        child: const MyApp(),
+      ),
+    );
   }, (error, stack) {
     // Print to console so the error appears in `flutter run -v` and logcat
     // For production use, send this to a crash reporting service.
@@ -51,6 +62,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'Inter',
+      ),
       debugShowCheckedModeBanner: false,
       routes: {'/': (context) => const SplashPage()},
     );
