@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:recova/pages/home_page.dart';
-// import 'package:recova/pages/stats_page.dart';
-// import 'package:recova/pages/community_page.dart';
-// import 'package:recova/pages/journal_page.dart';
-// import 'package:recova/pages/profile_page.dart';
+import 'package:recova/pages/create_post_page.dart';
+import 'package:recova/pages/stats_page.dart';
+import 'package:recova/pages/community_page.dart';
+import 'package:recova/pages/journal_page.dart';
+import 'package:recova/pages/profile_page.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
@@ -13,14 +14,14 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  final int _currentIndex = 0;
+  int _currentIndex = 0;
 
   final List<Widget> _pages = [
     const HomePage(),
-    // const StatsPage(),
-    // const CommunityPage(),
-    // const JournalPage(),
-    // const ProfilePage(),
+    const StatsPage(),
+    const CommunityPage(),
+    const JournalPage(),
+    const ProfilePage(),
   ];
 
   @override
@@ -35,7 +36,12 @@ class _MainScaffoldState extends State<MainScaffold> {
       floatingActionButton: _currentIndex == 2
           ? FloatingActionButton(
               onPressed: () {
-                // TODO: Aksi untuk membuat post baru di komunitas
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CreatePostPage(),
+                  ),
+                );
               },
               backgroundColor: const Color(0xFF2EC4B6),
               shape: const CircleBorder(),
@@ -50,9 +56,9 @@ class _MainScaffoldState extends State<MainScaffold> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         onTap: (index) {
-          // setState(() {
-          //   _currentIndex = index;
-          // });
+          setState(() {
+            _currentIndex = index;
+          });
         },
         items: const [
           BottomNavigationBarItem(
