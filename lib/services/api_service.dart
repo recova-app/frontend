@@ -7,7 +7,7 @@ import 'package:recova/models/user_model.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/models/checkin_result_model.dart';
 import 'package:recova/models/post_model.dart';
-// import 'package:recova/models/education_model.dart';
+import 'package:recova/models/education_model.dart';
 
 class ApiService {
   // Ganti ini dengan URL backend kamu
@@ -208,18 +208,27 @@ class ApiService {
 
 
   // === EDUCATION ===
-  // static Future<List<Education>> getAllEducation() async {
-  //   final response = await http.get(
-  //     Uri.parse('$baseUrl/education'),
-  //     headers: headers(),
-  //   );
+  static Future<List<EducationContent>> getEducationContents() async {
+    http.Response? response;
+    try {
+      response = await http.get(
+        Uri.parse('$baseUrl/education'),
+        headers: await getHeaders(),
+      ).timeout(const Duration(seconds: 15));
 
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-  //     final list = data['data'] as List;
-  //     return list.map((e) => Education.fromJson(e)).toList();
-  //   } else {
-  //     throw Exception('Gagal memuat konten edukasi');
-  //   }
-  // }
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final list = data['data'] as List;
+        return list.map((e) => EducationContent.fromJson(e)).toList();
+      } else {
+        if (response.statusCode == 401 || response.statusCode == 403) {
+          await _authService.logout();
+          throw Exception('Sesi berakhir. Silakan login kembali.');
+        }
+        throw Exception(_handleError(null, response));
+      }
+    } catch (e) {
+      throw Exception(_handleError(e, response));
+    }
+  }
 }

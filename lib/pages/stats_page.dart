@@ -35,20 +35,27 @@ class _StatsPageState extends State<StatsPage> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final homeState = context.read<HomeCubit>().state;
       if (homeState is HomeLoadSuccess) {
-        final lastDate = _getLastStreakDate(homeState.statistics);
-        if (lastDate != null && mounted) {
+        // Menggunakan tanggal awal streak, bukan tanggal terakhir
+        final streakStartDate = _getStreakStartDate(homeState.statistics);
+        if (streakStartDate != null && mounted) {
           setState(() {
-            _timeSinceLastRelapse = DateTime.now().difference(lastDate);
+            _timeSinceLastRelapse = DateTime.now().difference(streakStartDate);
           });
         }
       }
     });
   }
 
-  DateTime? _getLastStreakDate(Statistics stats) {
-    if (stats.streakCalendar.isEmpty) return null;
+  DateTime? _getStreakStartDate(Statistics stats) {
+    if (stats.currentStreak == 0 || stats.streakCalendar.isEmpty) return null;
+
     try {
-      return DateTime.parse(stats.streakCalendar.last);
+      // Ambil tanggal check-in terakhir
+      final lastCheckIn = DateTime.parse(stats.streakCalendar.last);
+      // Hitung tanggal mulai dengan mengurangi jumlah hari streak
+      final startDate = lastCheckIn.subtract(Duration(days: stats.currentStreak - 1));
+      // Kembalikan tanggal tanpa informasi jam, menit, detik
+      return DateTime(startDate.year, startDate.month, startDate.day);
     } catch (_) {
       return null;
     }
