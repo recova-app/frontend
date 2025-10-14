@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:recova/pages/splash_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/home_cubit.dart';
+import 'package:recova/bloc/community_cubit.dart';
 import 'package:recova/bloc/checkin_cubit.dart';
 
 void main() {
@@ -40,6 +41,7 @@ void main() {
         providers: [
           BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
           BlocProvider<CheckinCubit>(create: (context) => CheckinCubit()),
+          BlocProvider<CommunityCubit>(create: (context) => CommunityCubit()),
         ],
         child: const MyApp(),
       ),
