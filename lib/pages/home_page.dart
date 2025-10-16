@@ -6,6 +6,7 @@ import 'package:recova/models/user_model.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/pages/checkin_page.dart';
 import 'package:recova/pages/login_page.dart';
+import 'package:recova/pages/emergency_page.dart';
 import 'package:recova/services/auth_service.dart';
 
 class HomePage extends StatelessWidget {
@@ -378,35 +379,46 @@ class EmergencyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFCDD2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Image.asset('assets/images/home/icon_emergency.png',
-              width: 32, height: 32),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Emergency Button',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Color(0xFFC62828))),
-                SizedBox(height: 4),
-                Text(
-                  'Dapatkan Bantuan instan ketika dalam waktu feeling tempted',
-                  style: TextStyle(fontSize: 13, color: Color(0xFFD32F2F)),
-                ),
-              ],
-            ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const EmergencyPage(),
+            fullscreenDialog: true, // Menampilkan halaman dari bawah
           ),
-        ],
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFCDD2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Image.asset('assets/images/home/icon_emergency.png',
+                width: 32, height: 32),
+            const SizedBox(width: 16),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Emergency Button',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Color(0xFFC62828))),
+                  SizedBox(height: 4),
+                  Text(
+                    'Dapatkan Bantuan instan ketika dalam waktu feeling tempted',
+                    style: TextStyle(fontSize: 13, color: Color(0xFFD32F2F)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
