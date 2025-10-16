@@ -6,6 +6,7 @@ import 'package:recova/services/auth_service.dart';
 import 'package:recova/models/user_model.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/models/checkin_result_model.dart';
+import 'package:recova/models/post_model.dart';
 // import 'package:recova/models/education_model.dart';
 
 class ApiService {
@@ -118,6 +119,93 @@ class ApiService {
       throw Exception(_handleError(e, response));
     }
   }
+
+  // === COMMUNITY ===
+  static Future<List<Post>> getCommunityPosts() async {
+    http.Response? response;
+    try {
+      response = await http.get(
+        Uri.parse('$baseUrl/community'),
+        headers: await getHeaders(),
+      ).timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final list = data['data'] as List;
+        return list.map((e) => Post.fromJson(e)).toList();
+      } else {
+        if (response.statusCode == 401 || response.statusCode == 403) {
+          await _authService.logout();
+          throw Exception('Sesi berakhir. Silakan login kembali.');
+        }
+        throw Exception(_handleError(null, response));
+      }
+    } catch (e) {
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  static Future<Post> createPost({required String title, required String content, required String category}) async {
+    http.Response? response;
+    try {
+      response = await http.post(
+        Uri.parse('$baseUrl/community'),
+        headers: await getHeaders(),
+        body: jsonEncode({
+          'title': title,
+          'content': content,
+          'category': category, // Mengirim kategori ke backend
+        }),
+      ).timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 201) { // 201 Created
+        final data = jsonDecode(response.body);
+        return Post.fromJson(data['data']);
+      } else {
+        if (response.statusCode == 401 || response.statusCode == 403) {
+          await _authService.logout();
+          throw Exception('Sesi berakhir. Silakan login kembali.');
+        }
+        throw Exception(_handleError(null, response));
+      }
+    } catch (e) {
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  static Future<void> likePost(String postId) async {
+    http.Response? response;
+    try {
+      response = await http.post(
+        Uri.parse('$baseUrl/community/$postId/like'),
+        headers: await getHeaders(),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw Exception(_handleError(null, response));
+      }
+    } catch (e) {
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  static Future<void> unlikePost(String postId) async {
+    http.Response? response;
+    try {
+      // Umumnya, unlike menggunakan metode DELETE
+      response = await http.delete(
+        Uri.parse('$baseUrl/community/$postId/like'),
+        headers: await getHeaders(),
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode != 200) {
+        throw Exception(_handleError(null, response));
+      }
+    } catch (e) {
+      throw Exception(_handleError(e, response));
+    }
+  }
+
 
   // === EDUCATION ===
   // static Future<List<Education>> getAllEducation() async {
