@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/home_cubit.dart';
 import 'package:recova/bloc/community_cubit.dart';
 import 'package:recova/bloc/checkin_cubit.dart';
+import 'package:recova/bloc/education_cubit.dart';
 
 void main() {
   // Ensure binding is initialized for plugin calls during startup
@@ -42,6 +43,7 @@ void main() {
           BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
           BlocProvider<CheckinCubit>(create: (context) => CheckinCubit()),
           BlocProvider<CommunityCubit>(create: (context) => CommunityCubit()),
+          BlocProvider<EducationCubit>(create: (context) => EducationCubit()),
         ],
         child: const MyApp(),
       ),

@@ -3,7 +3,7 @@ import 'package:recova/pages/home_page.dart';
 import 'package:recova/pages/create_post_page.dart';
 import 'package:recova/pages/stats_page.dart';
 import 'package:recova/pages/community_page.dart';
-import 'package:recova/pages/journal_page.dart';
+import 'package:recova/pages/education_page.dart';
 import 'package:recova/pages/profile_page.dart';
 
 class MainScaffold extends StatefulWidget {
@@ -20,7 +20,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     const HomePage(),
     const StatsPage(),
     const CommunityPage(),
-    const JournalPage(),
+    const EducationPage(),
     const ProfilePage(),
   ];
 
@@ -75,7 +75,7 @@ class _MainScaffoldState extends State<MainScaffold> {
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/book_icon.png')),
-            label: 'Journal',
+            label: 'Eduacation',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/setting_icon.png')),

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:recova/pages/home_page.dart';
+import 'package:recova/pages/main_scaffold.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/services/auth_service.dart';
 
@@ -29,7 +29,7 @@ class _SplashPageState extends State<SplashPage> {
     if (!mounted) return;
 
     // Jika token ada, navigasi ke HomePage. Jika tidak, ke LoginPage.
-    final page = token != null ? const HomePage() : const LoginPage();
+    final page = token != null ? const MainScaffold() : const LoginPage();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => page));
   }
