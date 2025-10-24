@@ -4,7 +4,6 @@ import 'package:recova/pages/create_post_page.dart';
 import 'package:recova/pages/stats_page.dart';
 import 'package:recova/pages/community_page.dart';
 import 'package:recova/pages/education_page.dart';
-import 'package:recova/pages/profile_page.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
@@ -21,7 +20,6 @@ class _MainScaffoldState extends State<MainScaffold> {
     const StatsPage(),
     const CommunityPage(),
     const EducationPage(),
-    const ProfilePage(),
   ];
 
   @override
@@ -75,11 +73,7 @@ class _MainScaffoldState extends State<MainScaffold> {
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/book_icon.png')),
-            label: 'Eduacation',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/menu/setting_icon.png')),
-            label: 'Profile',
+            label: 'Education',
           ),
         ],
       ),

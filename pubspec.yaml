@@ -42,8 +42,10 @@ dependencies:
   http: ^1.5.0
   table_calendar: ^3.0.9
   url_launcher: ^6.2.6
+  flutter_dotenv: ^6.0.0
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
 
@@ -55,6 +57,10 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app-icon.png"
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -68,8 +74,10 @@ flutter:
   assets:
     - assets/images/
     - assets/images/home/
+    - assets/images/onboarding/
     - assets/images/menu/ # <-- Tambahkan path ini untuk ikon navigasi Anda
     - assets/fonts/static/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

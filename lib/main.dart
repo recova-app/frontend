@@ -1,42 +1,70 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:recova/pages/splash_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recova/bloc/education_cubit.dart';
 import 'package:recova/bloc/home_cubit.dart';
 import 'package:recova/bloc/community_cubit.dart';
 import 'package:recova/bloc/checkin_cubit.dart';
-import 'package:recova/bloc/education_cubit.dart';
+import 'package:recova/pages/login_page.dart';
+import 'package:recova/pages/main_scaffold.dart';
+import 'package:recova/pages/onboarding/learning_2.dart';
+import 'package:recova/pages/onboarding/learning_3.dart';
+import 'package:recova/pages/onboarding/learning_4.dart';
+import 'package:recova/pages/onboarding/learning_5.dart';
+import 'package:recova/pages/onboarding/questions/question_1.dart';
+import 'package:recova/pages/onboarding/questions/question_2.dart';
+import 'package:recova/pages/onboarding/questions/question_3.dart';
+import 'package:recova/pages/onboarding/questions/question_4.dart';
+import 'package:recova/pages/onboarding/questions/question_5.dart';
+import 'package:recova/pages/onboarding/questions/question_6.dart';
+import 'package:recova/pages/onboarding/questions/question_7.dart';
+import 'package:recova/pages/onboarding/questions/question_8.dart';
+import 'package:recova/pages/onboarding/questions/question_9.dart';
+import 'package:recova/pages/onboarding/set_name.dart';
+import 'package:recova/pages/onboarding/know_your_why.dart';
+import 'package:recova/pages/onboarding/set_porn_free_day.dart';
+import 'package:recova/pages/onboarding/set_checkin_time.dart';
+import 'package:recova/pages/onboarding/preparing_test_result.dart';
+import 'package:recova/pages/onboarding/results.dart';
+import 'package:recova/pages/onboarding/benefits.dart';
+import 'package:recova/pages/onboarding/why-checkin.dart';
+import 'package:recova/pages/splash_screen.dart';
+import 'package:recova/pages/onboarding/learning_1.dart';
+import 'package:recova/theme/app_theme.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
-  // Ensure binding is initialized for plugin calls during startup
-  WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    // Load environment variables
+    await dotenv.load(fileName: ".env");
 
-  // Replace the default error widget to show a readable message instead of a blank crash
-  ErrorWidget.builder = (FlutterErrorDetails details) {
-    // You can customize the UI here. Keep it simple so it won't crash again.
-    return Material(
-      color: Colors.white,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error, color: Colors.red, size: 48),
-              const SizedBox(height: 8),
-              const Text('Terjadi error pada aplikasi', style: TextStyle(fontSize: 18)),
-              const SizedBox(height: 8),
-              Text(details.exceptionAsString(), textAlign: TextAlign.center),
-            ],
+    // Customize Flutter error UI
+    ErrorWidget.builder = (FlutterErrorDetails details) {
+      return Material(
+        color: Colors.white,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.error, color: Colors.red, size: 48),
+                const SizedBox(height: 8),
+                const Text(
+                  'Terjadi error pada aplikasi',
+                  style: TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 8),
+                Text(details.exceptionAsString(), textAlign: TextAlign.center),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  };
+      );
+    };
 
-  // Catch errors that escape the Flutter framework
-  runZonedGuarded(() {
     runApp(
       MultiBlocProvider(
         providers: [
@@ -49,13 +77,11 @@ void main() {
       ),
     );
   }, (error, stack) {
-    // Print to console so the error appears in `flutter run -v` and logcat
-    // For production use, send this to a crash reporting service.
-    FlutterError.presentError(FlutterErrorDetails(exception: error, stack: stack));
-    // Also print plain error
-    // ignore: avoid_print
+    // Handle uncaught errors
+    FlutterError.presentError(
+      FlutterErrorDetails(exception: error, stack: stack),
+    );
     print('Uncaught zone error: $error');
-    // ignore: avoid_print
     print(stack);
   });
 }
@@ -66,11 +92,37 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        fontFamily: 'Inter',
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.lightTheme,
+      themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      routes: {'/': (context) => const SplashPage()},
+      routes: {
+        '/': (context) => const MainScaffold(),
+        '/homepage': (context) => const MainScaffold(),
+        '/login': (context) => const LoginPage(),	
+        '/learning-1': (context) => const Learning1(),
+        '/learning-2': (context) => const Learning2(),
+        '/learning-3': (context) => const Learning3(),
+        '/learning-4': (context) => const Learning4(),
+        '/learning-5': (context) => const Learning5(),
+        '/set-name': (context) => const SetNamePage(),
+        '/question-1': (context) => const Question1(),
+        '/question-2': (context) => const Question2(),
+        '/question-3': (context) => const Question3(),
+        '/question-4': (context) => const Question4(),
+        '/question-5': (context) => const Question5(),
+        '/question-6': (context) => const Question6(),
+        '/question-7': (context) => const Question7(),
+        '/question-8': (context) => const Question8(),
+        '/question-9': (context) => const Question9(),
+        '/know-your-why': (context) => const KnowYourWhyPage(),
+        '/set-porn-free-day': (context) => const SetPornFreeDayPage(),
+        '/set-checkin-time': (context) => const SetCheckinTimePage(),
+        '/why-checkin': (context) => const WhyCheckinPage(),
+        '/preparing-test-result': (context) => const PreparingTestResultPage(),
+        '/results': (context) => const ResultsPage(),
+        '/benefits': (context) => const BenefitsPage(),
+      },
     );
   }
 }

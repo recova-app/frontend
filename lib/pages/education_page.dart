@@ -59,7 +59,7 @@ class _EducationPageState extends State<EducationPage> {
               child: Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Text(
-                  "“Perubahan kecil dalam kebiasaan sehari-hari bisa membawa perubahan besar dalam hidupmu.”\n- James Clear -",
+                  "“Perubahan kecil dalam kebiasaan sehari-hari bisa membawa perubahan besar dalam hidupmu.”- James Clear -",
                   style: TextStyle(
                       fontSize: 14,
                       color: Colors.white,

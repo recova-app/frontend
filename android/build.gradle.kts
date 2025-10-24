@@ -1,3 +1,11 @@
+buildscript {
+	repositories {
+        google() // This is the crucial line
+        mavenCentral()
+    }
+    // Removed Google Services dependency since we're not using Firebase
+}
+
 allprojects {
     repositories {
         google()

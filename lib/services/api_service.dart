@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:io'; // Untuk SocketException
 import 'dart:async'; // Untuk TimeoutException
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recova/services/auth_service.dart';
 import 'package:recova/models/user_model.dart';
 import 'package:recova/models/statistics_model.dart';
@@ -10,16 +11,16 @@ import 'package:recova/models/post_model.dart';
 import 'package:recova/models/education_model.dart';
 
 class ApiService {
-  // Ganti ini dengan URL backend kamu
-  static const String baseUrl = 'http://10.0.2.2:3000/api/v1';
+  // Get base URL from environment variables
+  static String get baseUrl => '${dotenv.env['BASE_API_URL'] ?? 'https://recova.salmanabdurrahman.my.id'}/api/v1';
   static final AuthService _authService = AuthService();
 
   // === Header helper ===
   static Future<Map<String, String>> getHeaders() async {
-    final token = await _authService.getToken();
+    final token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImZiOWY5MzcxZDU3NTVmM2UzODNhNDBhYjNhMTcyY2Q4YmFjYTUxN2YiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxNTczMTU1NTIyMDctdGxwbDhhZHV1Z2RwdGVydXBodHEyNDY3bzhkOGxtcmQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIxNTczMTU1NTIyMDctdGxwbDhhZHV1Z2RwdGVydXBodHEyNDY3bzhkOGxtcmQuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTQ0MDg3NzgwODI5NTc0OTUxODYiLCJlbWFpbCI6InNhbG1hbmFiZHVycmFobWFuMTIzNDVAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJid0ViaktaRWhJOVlnSTNHQXBOSjZnIiwiaWF0IjoxNzYxMjMxMTUzLCJleHAiOjE3NjEyMzQ3NTN9.C_SuKu0LPuPrc30AT7IjyB-wk-RkFuqs6u1Y-YC6P6kmQp13Fsc_4YHhwvhQyksbjd8ZZYbIDGmGZ1VT-d2BGUX9TLp4a9DsABspy3CE4ZzWVGEr-9F8H733pvJZBENuTWfmWMAiYxwUDf0cSO7qqBskhskX7bLU3KywKN2l9ob74q1N4FcISGwLp6zjXEDh4O7mDlx0pnignhvM8XeC8ttva3vz637knu-635MFf4GPAf2qkin2hXcq5D9aMh5hnJxUuOAb8RfPK0svMDNn8GV6rdldTa8I62CiPITyrHH5tIwIZaejQQDMqRT3_lTaGo52o2VbS-fe-SoJ8AlPNA';
     return {
       'Content-Type': 'application/json',
-      if (token != null) 'Authorization': 'Bearer $token',
+       'Authorization': 'Bearer $token',
     };
   }
 
@@ -214,7 +215,7 @@ class ApiService {
       response = await http.get(
         Uri.parse('$baseUrl/education'),
         headers: await getHeaders(),
-      ).timeout(const Duration(seconds: 15));
+      ).timeout(const Duration(seconds: 15)); 
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

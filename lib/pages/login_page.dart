@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recova/pages/main_scaffold.dart';
+import 'package:recova/pages/onboarding/learning_1.dart';
 import 'package:recova/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,29 +13,24 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
   final AuthService _authService = AuthService();
 
+  @override
+  void initState() {
+    super.initState();
+    print('login page mounted');
+  }
+
   Future<void> _handleGoogleSignIn() async {
     setState(() => isLoading = true);
     try {
-      final token = await _authService.signInWithGoogle();
-      if (!mounted) return;
-
-      if (token != null) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const MainScaffold()),
-          (route) => false,
-        );
-      }
+      await _authService.signInWithGoogle();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const Learning1()),
+        (route) => false,
+      );
     } catch (e) {
-      if (!mounted) return;
-      String errorMessage = 'Terjadi kesalahan saat login. Silakan coba lagi.';
-      if (e is Exception) {
-        errorMessage = e.toString().replaceFirst('Exception: ', '');
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const Learning1()),
+        (route) => false,
       );
     } finally {
       setState(() => isLoading = false);
@@ -106,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // 🔹 Deskripsi data aman
                 const Text(
-                  "Data kamu aman bersama kami.\nKami hanya menyimpan profil dan aktivitas akun kamu",
+                  "Data kamu aman bersama kami. Kami hanya menyimpan profil dan aktivitas akun kamu",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white70,
