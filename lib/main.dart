@@ -97,7 +97,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => const MainScaffold(),
+        '/': (context) => const SplashPage(),
         '/homepage': (context) => const MainScaffold(),
         '/login': (context) => const LoginPage(),	
         '/learning-1': (context) => const Learning1(),

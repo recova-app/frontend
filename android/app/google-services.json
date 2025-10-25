@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "756280521811",
+    "firebase_url": "https://recova-app-default-rtdb.firebaseio.com",
+    "project_id": "recova-app",
+    "storage_bucket": "recova-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756280521811:android:1234567890abcdef",
+        "android_client_info": {
+          "package_name": "com.company.Recova"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756280521811-androidclientid123456789.apps.googleusercontent.com",
+          "client_type": 1
+        },
+        {
+          "client_id": "756280521811-8g4mpvlputn04ltqdcghionnbrebhqbo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDummyApiKeyForDevelopmentPurposes123"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756280521811-8g4mpvlputn04ltqdcghionnbrebhqbo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

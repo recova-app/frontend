@@ -67,6 +67,12 @@ class _StatsPageState extends State<StatsPage> {
       backgroundColor: const Color(0xFFF8F8F8),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
+          if (state is HomeLoading || state is HomeInitial) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is HomeLoadFailure) {
+            return Center(child: Text('Gagal memuat statistik: ${state.error}'));
+          }
           if (state is HomeLoadSuccess) {
             final stats = state.statistics;
             final totalDays = 32;
@@ -312,3 +318,4 @@ class _StatsPageState extends State<StatsPage> {
     );
   }
 }
+  

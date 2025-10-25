@@ -3,7 +3,9 @@ buildscript {
         google() // This is the crucial line
         mavenCentral()
     }
-    // Removed Google Services dependency since we're not using Firebase
+    dependencies {
+        classpath("com.google.gms:google-services:4.4.0")
+    }
 }
 
 allprojects {

@@ -1,13 +1,14 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class AuthService {
-  // Get static JWT token from environment variables
-  static String get _staticJwtToken => dotenv.env['JWT_TOKEN'] ?? '';
+  // Use the web client ID that your backend expects
+  static const String _webClientId = '756280521811-8g4mpvlputn04ltqdcghionnbrebhqbo.apps.googleusercontent.com';
   
   final GoogleSignIn _googleSignIn = GoogleSignIn(
+    serverClientId: _webClientId, // Use serverClientId for backend verification
     scopes: ['email', 'profile'],
   );
 
@@ -15,88 +16,65 @@ class AuthService {
 
   Future<String?> signInWithGoogle() async {
     try {
-      // Try to sign in with Google (for UI purposes)
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      // 1. Lakukan sign in dengan Google
+      final GoogleSignInAccount? account = await _googleSignIn.signIn();
+      if (account == null) {
+        // Pengguna membatalkan login
+        return null;
+      }
 
-      if (googleUser == null) {
-        // User canceled the sign-in process, but we'll still use the static token
-        debugPrint('User canceled Google sign-in, using static token');
+      // 2. Dapatkan Google ID Token
+      final GoogleSignInAuthentication auth = await account.authentication;
+      final idToken = auth.idToken;
+      if (idToken == null) {
+        throw Exception("Gagal mendapatkan Google ID Token");
+      }
+
+      print("DEBUG: Google ID Token obtained, sending to backend...");
+      print("DEBUG: Token length: ${idToken.length}");
+
+      // 3. Kirim token ke backend
+      final response = await http.post(
+        Uri.parse('https://recova.salmanabdurrahman.my.id/api/v1/auth/google'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'token': idToken}),
+      );
+
+      print("DEBUG: Backend response status: ${response.statusCode}");
+      print("DEBUG: Backend response body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // Try several common places where the backend might place the JWT.
+        String? jwtToken;
+        if (data is Map<String, dynamic>) {
+          jwtToken = data['data'] is Map ? (data['data']['token'] ?? data['data']['accessToken'] ?? data['data']['access_token']) : null;
+          jwtToken ??= data['token'] ?? data['accessToken'] ?? data['access_token'];
+        }
+
+        if (jwtToken != null && jwtToken.isNotEmpty) {
+          // 4. Simpan token JWT
+          await _storage.write(key: 'jwt_token', value: jwtToken);
+          return jwtToken;
+        } else {
+          // Provide the raw response body to help debugging backend changes.
+          throw Exception("Respons dari server tidak valid (token tidak ditemukan). Body: ${response.body}");
+        }
       } else {
-        debugPrint('Google sign-in successful for: ${googleUser.email}');
+        throw Exception("Login gagal: ${response.body}");
       }
-
-      // Always use the static JWT token from environment variables
-      if (_staticJwtToken.isNotEmpty) {
-        // Save the static JWT token to secure storage
-        await _storage.write(key: 'jwt_token', value: _staticJwtToken);
-        debugPrint('Using static JWT token from environment');
-        return _staticJwtToken;
-      } else {
-        throw Exception("JWT token tidak ditemukan di environment variables");
-      }
-
-    } catch (error) {
-      debugPrint('Error during sign-in: $error');
-      
-      // Even if Google sign-in fails, try to use the static token
-      if (_staticJwtToken.isNotEmpty) {
-        await _storage.write(key: 'jwt_token', value: _staticJwtToken);
-        debugPrint('Using static JWT token despite error');
-        return _staticJwtToken;
-      }
-      
-      rethrow; // Re-throw if no static token available
+    } catch (e) {
+      print("DEBUG: Error in signInWithGoogle: $e");
+      rethrow;
     }
   }
 
   Future<void> logout() async {
-    // Sign out from Google and clear stored token
+    // Hapus token dari kedua tempat
     await _googleSignIn.signOut();
     await _storage.delete(key: 'jwt_token');
-    // Note: The static token from environment will still be available for re-login
   }
 
-  Future<String?> getToken() async {
-    try {
-      // First try to get token from secure storage
-      final storedToken = await _storage.read(key: 'jwt_token');
-      if (storedToken != null && storedToken.isNotEmpty) {
-        return storedToken;
-      }
-      
-      // If no stored token, use the static token from environment
-      if (_staticJwtToken.isNotEmpty) {
-        // Store it for next time
-        await _storage.write(key: 'jwt_token', value: _staticJwtToken);
-        return _staticJwtToken;
-      }
-      
-      return null;
-    } catch (error) {
-      // If there's an error reading from secure storage, fallback to static token
-      debugPrint('Error reading token from secure storage: $error');
-      
-      if (_staticJwtToken.isNotEmpty) {
-        return _staticJwtToken;
-      }
-      
-      return null;
-    }
-  }
-
-  /// Get current Google Sign-In user information
-  GoogleSignInAccount? get currentUser => _googleSignIn.currentUser;
-
-  /// Check if user is currently signed in to Google
-  bool get isSignedIn => _googleSignIn.currentUser != null;
-
-  /// Silent sign-in attempt (useful for automatic login)
-  Future<GoogleSignInAccount?> signInSilently() async {
-    try {
-      return await _googleSignIn.signInSilently();
-    } catch (error) {
-      debugPrint('Silent sign-in failed: $error');
-      return null;
-    }
-  }
+  Future<String?> getToken() => _storage.read(key: 'jwt_token');
 }
